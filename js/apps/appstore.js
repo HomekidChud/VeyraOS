@@ -32,7 +32,10 @@ AppRegistry.register('appstore', {
         <div class="appstore-featured">
           <h3>✨ Featured: Veyra Browser Pro</h3>
           <p>The ultimate private browsing experience. Server-side rendering, disposable sessions, and built-in VPN.</p>
-          <button style="margin-top:12px;padding:6px 18px;border-radius:999px;background:rgba(255,255,255,0.2);color:#fff;border:0.5px solid rgba(255,255,255,0.3);font-weight:600;cursor:pointer;" onclick="Toast.show('App Store','Already installed!','✅')">GET</button>
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <button style="padding:6px 18px;border-radius:999px;background:rgba(255,255,255,0.2);color:#fff;border:0.5px solid rgba(255,255,255,0.3);font-weight:600;cursor:pointer;" onclick="Toast.show('App Store','Already installed!','✅')">GET</button>
+            <button style="padding:6px 18px;border-radius:999px;background:rgba(255,255,255,0.1);color:#fff;border:0.5px solid rgba(255,255,255,0.2);font-weight:600;cursor:pointer;" id="vyrInstallBtn">Install .vyr File...</button>
+          </div>
         </div>
         <div class="appstore-grid">
           ${apps.map((app, i) => `
@@ -70,5 +73,39 @@ AppRegistry.register('appstore', {
         }
       });
     });
+
+    // .vyr package installer button
+    const vyrBtn = container.querySelector('#vyrInstallBtn');
+    if (vyrBtn) {
+      vyrBtn.addEventListener('click', () => {
+        const dialog = document.getElementById('vyrInstallDialog');
+        if (dialog) dialog.showModal();
+      });
+    }
+
+    // Show installed .vyr packages
+    const installedVyr = VyrPackage.getInstalled();
+    if (installedVyr.length > 0) {
+      const grid = container.querySelector('.appstore-grid');
+      if (grid) {
+        installedVyr.forEach(pkg => {
+          const card = document.createElement('div');
+          card.className = 'appstore-card';
+          card.innerHTML = `
+            <div class="appstore-card-icon" style="background:linear-gradient(135deg,var(--accent),var(--purple));">${pkg.manifest.icon || '📦'}</div>
+            <div class="appstore-card-info">
+              <div class="appstore-card-name">${pkg.manifest.name}</div>
+              <div class="appstore-card-desc">v${pkg.manifest.version} • .vyr package</div>
+            </div>
+            <button class="appstore-get" data-vyr="${pkg.appId}">OPEN</button>
+          `;
+          grid.appendChild(card);
+          card.querySelector('[data-vyr]').addEventListener('click', (e) => {
+            e.stopPropagation();
+            WindowManager.open(pkg.appId);
+          });
+        });
+      }
+    }
   }
 });

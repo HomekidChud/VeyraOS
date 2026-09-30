@@ -72,6 +72,12 @@ const SoftwareUpdate = {
           this.updating = false;
           this.currentVersion = this.latestVersion;
           OSStorage.set('osVersion', this.currentVersion);
+
+          // Auto-deploy the updated version
+          if (window._veyraDeploy) {
+            window._veyraDeploy();
+          }
+
           resolve(true);
         } else {
           if (onProgress) onProgress(Math.round(this.updateProgress));
