@@ -280,10 +280,23 @@ const WindowManager = {
       el.style.top = newTop + 'px';
     });
 
-    document.addEventListener('mouseup', () => {
+    document.addEventListener('mouseup', (e) => {
       if (isDragging) {
         isDragging = false;
         document.body.style.cursor = '';
+
+        // Window snapping
+        if (window.innerWidth > 768) {
+          const margin = 8;
+          // Snap to left half
+          if (e.clientY < 60 && e.clientX < 80) {
+            _snapWindow(el, 'left');
+          } else if (e.clientY < 60 && e.clientX > window.innerWidth - 80) {
+            _snapWindow(el, 'right');
+          } else if (e.clientY < 40) {
+            _snapWindow(el, 'top');
+          }
+        }
       }
     });
 
@@ -304,6 +317,30 @@ const WindowManager = {
     document.addEventListener('touchend', () => {
       isDragging = false;
     });
+  },
+
+  _snapWindow(el, position) {
+    const menubarH = 28;
+    const dockH = 80;
+    const availH = window.innerHeight - menubarH - dockH;
+    const availW = window.innerWidth;
+
+    if (position === 'left') {
+      el.style.left = '0px';
+      el.style.top = menubarH + 'px';
+      el.style.width = (availW / 2 - 4) + 'px';
+      el.style.height = availH + 'px';
+    } else if (position === 'right') {
+      el.style.left = (availW / 2 + 4) + 'px';
+      el.style.top = menubarH + 'px';
+      el.style.width = (availW / 2 - 4) + 'px';
+      el.style.height = availH + 'px';
+    } else if (position === 'top') {
+      el.style.left = '0px';
+      el.style.top = menubarH + 'px';
+      el.style.width = availW + 'px';
+      el.style.height = availH + 'px';
+    }
   },
 
   _makeResizable(el, winData) {

@@ -42,6 +42,10 @@ AppRegistry.register('settings', {
             <svg class="settings-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h10M7 14h6"/></svg>
             Storage
           </div>
+          <div class="settings-nav-item" data-section="softwareupdate">
+            <svg class="settings-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+            Software Update
+          </div>
           <div class="settings-nav-item" data-section="about">
             <svg class="settings-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
             About
@@ -195,6 +199,37 @@ AppRegistry.register('settings', {
           <div class="settings-row"><div class="settings-row-label">Other</div><span style="color:var(--muted);">4.0 GB</span></div>
         </div>
       `,
+      softwareupdate: () => `
+        <div class="settings-section">
+          <h2 class="settings-section-title">Software Update</h2>
+          <div style="background:var(--surface);border-radius:12px;padding:24px;text-align:center;margin-bottom:16px;">
+            <div style="width:64px;height:64px;margin:0 auto 12px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:2rem;">💻</div>
+            <h3 style="font-size:1.2rem;font-weight:600;">VeyraOS ${SoftwareUpdate.getCurrentVersion()}</h3>
+            <p style="color:var(--muted);font-size:0.84rem;margin-top:4px;" id="updateStatus">Checking for updates...</p>
+            <div id="updateProgressWrap" style="display:none;margin-top:16px;">
+              <div style="height:6px;background:var(--surface-3);border-radius:3px;overflow:hidden;">
+                <div id="updateProgressBar" style="height:100%;width:0%;background:var(--accent);transition:width 0.3s;"></div>
+              </div>
+              <p style="font-size:0.78rem;color:var(--muted);margin-top:8px;" id="updateProgressText">Installing... 0%</p>
+            </div>
+            <button class="btn primary" id="updateBtn" style="margin-top:16px;" disabled>Checking...</button>
+          </div>
+          <div style="background:var(--surface);border-radius:12px;padding:16px;">
+            <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:12px;">Version History</h3>
+            ${SoftwareUpdate.getChangelog().map((v, i) => `
+              <div style="padding:12px 0;border-bottom:0.5px solid var(--line);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                  <span style="font-weight:600;font-size:0.86rem;">Version ${v.version}</span>
+                  <span style="font-size:0.74rem;color:var(--muted);">${v.date}</span>
+                </div>
+                <ul style="list-style:none;padding:0;margin:0;">
+                  ${v.changes.map(c => `<li style="font-size:0.78rem;color:var(--text-2);padding:2px 0;">• ${c}</li>`).join('')}
+                </ul>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `,
       about: () => `
         <div class="settings-section">
           <h2 class="settings-section-title">About</h2>
@@ -261,6 +296,48 @@ AppRegistry.register('settings', {
           OSStorage.saveUser(user);
         });
       });
+
+      // Wire up software update
+      const updateBtn = main.querySelector('#updateBtn');
+      if (updateBtn) {
+        const updateStatus = main.querySelector('#updateStatus');
+        SoftwareUpdate.checkForUpdates().then(result => {
+          if (result.available) {
+            updateStatus.textContent = `Update available — VeyraOS ${result.latest}`;
+            updateBtn.disabled = false;
+            updateBtn.textContent = 'Install Update';
+          } else {
+            updateStatus.textContent = 'Your system is up to date.';
+            updateBtn.disabled = true;
+            updateBtn.textContent = 'Up to Date';
+          }
+        });
+
+        updateBtn.addEventListener('click', async () => {
+          updateBtn.disabled = true;
+          updateBtn.textContent = 'Installing...';
+          const progressWrap = main.querySelector('#updateProgressWrap');
+          const progressBar = main.querySelector('#updateProgressBar');
+          const progressText = main.querySelector('#updateProgressText');
+          progressWrap.style.display = 'block';
+
+          await SoftwareUpdate.installUpdate((progress) => {
+            progressBar.style.width = progress + '%';
+            progressText.textContent = `Installing... ${progress}%`;
+          });
+
+          progressText.textContent = 'Update complete!';
+          updateStatus.textContent = `VeyraOS ${SoftwareUpdate.getCurrentVersion()} is now installed.`;
+          updateBtn.textContent = 'Restart to Apply';
+          updateBtn.disabled = false;
+          updateBtn.addEventListener('click', () => {
+            if (confirm('Restart VeyraOS to apply the update?')) {
+              location.reload();
+            }
+          });
+          Toast.show('Software Update', `VeyraOS ${SoftwareUpdate.getCurrentVersion()} installed successfully`, '✅');
+        });
+      }
 
       // Wire up dock size
       const dockSize = main.querySelector('#dockSize');

@@ -12,9 +12,12 @@ const Dock = {
     { id: 'calendar', name: 'Calendar', icon: VeyraIcons.calendar },
     { id: 'photos', name: 'Photos', icon: VeyraIcons.photos },
     { id: 'music', name: 'Music', icon: VeyraIcons.music },
+    { id: 'paint', name: 'Paint Studio', icon: 'assets/icons/paint.svg' },
+    { id: 'weather', name: 'Weather', icon: 'assets/icons/weather.svg' },
     { id: 'downloads', name: 'Downloads', icon: VeyraIcons.downloads },
     { id: 'appstore', name: 'App Store', icon: VeyraIcons.appstore },
     { id: 'calculator', name: 'Calculator', icon: VeyraIcons.calculator },
+    { id: 'activity', name: 'Activity Monitor', icon: 'assets/icons/activity.svg' },
     { id: 'texteditor', name: 'Text Editor', icon: VeyraIcons.texteditor },
     { id: 'terminal', name: 'Terminal', icon: VeyraIcons.terminal },
     { id: 'settings', name: 'Settings', icon: VeyraIcons.settings }
@@ -86,7 +89,10 @@ const Dock = {
         browser: { width: 1000, height: 680 },
         appstore: { width: 800, height: 560 },
         settings: { width: 780, height: 540 },
-        texteditor: { width: 640, height: 520 }
+        texteditor: { width: 640, height: 520 },
+        paint: { width: 900, height: 640 },
+        weather: { width: 400, height: 640, resizable: false },
+        activity: { width: 720, height: 540 }
       };
       WindowManager.open(appId, sizeOverrides[appId] || {});
     }
