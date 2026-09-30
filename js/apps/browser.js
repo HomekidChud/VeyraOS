@@ -590,7 +590,7 @@ AppRegistry.register('browser', {
       pageContainer.innerHTML = `
         <div class="browser-startpage">
           <div class="browser-startpage-logo">
-            ${VeyraIcons.browser}
+            <img src="${VeyraIcons.browser}" alt="Veyra" style="width:40px;height:40px;">
             <span>Veyra</span>
           </div>
           <div class="browser-search-box">

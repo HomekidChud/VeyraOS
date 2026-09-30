@@ -5,7 +5,7 @@
 AppRegistry.register('appstore', {
   name: 'App Store',
   iconBg: 'linear-gradient(135deg, #0a84ff, #0040dd)',
-  iconText: '🛍️',
+  iconText: VeyraIcons.appstore,
 
   render(container, win) {
     const apps = [

@@ -1,0 +1,10 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4b5563"/><stop offset="100%" stop-color="#1f2937"/></linearGradient></defs>
+  <rect width="120" height="120" rx="26" fill="url(#bg)"/>
+  <rect x="22" y="18" width="76" height="24" rx="6" fill="#1a1a2e"/>
+  <text x="90" y="35" text-anchor="end" fill="#4ade80" font-size="16" font-family="SF Mono,monospace" font-weight="500">1,024</text>
+  <g fill="#6b7280"><circle cx="34" cy="56" r="8"/><circle cx="54" cy="56" r="8"/><circle cx="74" cy="56" r="8"/></g>
+  <g fill="#f59e0b"><circle cx="94" cy="56" r="8"/><circle cx="94" cy="76" r="8"/><circle cx="94" cy="96" r="8"/></g>
+  <g fill="#4b5563"><circle cx="34" cy="76" r="8"/><circle cx="54" cy="76" r="8"/><circle cx="74" cy="76" r="8"/>
+  <circle cx="34" cy="96" r="8"/><circle cx="54" cy="96" r="8"/><circle cx="74" cy="96" r="8"/></g>
+</svg>

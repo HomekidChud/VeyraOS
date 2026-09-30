@@ -517,3 +517,12 @@ svg { display: block; }
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
+
+/* Launchpad */
+.launchpad-overlay { position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,0.5); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); display: flex; align-items: center; justify-content: center; padding: 40px; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.launchpad-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 20px; width: 100%; max-width: 800px; }
+.launchpad-icon { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: transform 0.2s ease; }
+.launchpad-icon:hover { transform: scale(1.1); }
+.launchpad-icon img { width: 72px; height: 72px; border-radius: 16px; }
+.launchpad-icon span { color: #fff; font-size: 0.78rem; text-shadow: 0 1px 4px rgba(0,0,0,0.5); text-align: center; }

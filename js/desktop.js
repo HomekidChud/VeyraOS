@@ -15,10 +15,10 @@ const Desktop = {
 
     // Add hard drive icon
     const icons = [
-      { name: 'Veyra HD', svg: VeyraIcons.veyraHD, action: () => WindowManager.open('filemanager') },
+      { name: 'Veyra HD', icon: VeyraIcons.veyraHD, action: () => WindowManager.open('filemanager') },
       ...desktopFiles.map(f => ({
         name: f.name,
-        svg: VeyraIcons.textFile,
+        icon: VeyraIcons.textFile,
         action: () => {
           if (f.type === 'text') {
             WindowManager.open('texteditor', { title: f.name, width: 600, height: 500 });
@@ -36,7 +36,7 @@ const Desktop = {
 
     container.innerHTML = icons.map((icon, i) => `
       <div class="desktop-icon" data-idx="${i}">
-        <div class="desktop-icon-img" style="background:transparent;box-shadow:none;width:52px;height:52px;">${icon.svg}</div>
+        <div class="desktop-icon-img"><img src="${icon.icon}" alt="${icon.name}" loading="lazy"></div>
         <div class="desktop-icon-label">${icon.name}</div>
       </div>
     `).join('');

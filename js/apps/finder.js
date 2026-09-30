@@ -5,7 +5,7 @@
 AppRegistry.register('finder', {
   name: 'Finder',
   iconBg: 'linear-gradient(135deg, #4a9eff, #2563eb)',
-  iconText: '📁',
+  iconText: VeyraIcons.finder,
 
   render(container, win) {
     const files = OSStorage.getFiles();

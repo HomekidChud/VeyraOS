@@ -5,7 +5,7 @@
 AppRegistry.register('music', {
   name: 'Music',
   iconBg: 'linear-gradient(135deg, #ec4899, #db2777)',
-  iconText: '🎵',
+  iconText: VeyraIcons.music,
 
   render(container, win) {
     const tracks = [

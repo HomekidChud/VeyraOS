@@ -5,7 +5,7 @@
 AppRegistry.register('calendar', {
   name: 'Calendar',
   iconBg: 'linear-gradient(135deg, #ef4444, #dc2626)',
-  iconText: '📅',
+  iconText: VeyraIcons.calendar,
 
   render(container, win) {
     let viewDate = new Date();

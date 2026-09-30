@@ -238,9 +238,11 @@ const WindowManager = {
     let isDragging = false;
     let startX, startY, startLeft, startTop;
 
+    // Mouse support
     titlebar.addEventListener('mousedown', (e) => {
       if (e.target.closest('.window-btn')) return;
       if (winData.maximized) return;
+      if (window.innerWidth <= 768) return; // Don't drag on mobile
       isDragging = true;
       startX = e.clientX;
       startY = e.clientY;
@@ -249,6 +251,19 @@ const WindowManager = {
       document.body.style.cursor = 'grabbing';
       e.preventDefault();
     });
+
+    // Touch support
+    titlebar.addEventListener('touchstart', (e) => {
+      if (e.target.closest('.window-btn')) return;
+      if (winData.maximized) return;
+      if (window.innerWidth > 768) return; // Only touch-drag on mobile
+      const touch = e.touches[0];
+      isDragging = true;
+      startX = touch.clientX;
+      startY = touch.clientY;
+      startLeft = el.offsetLeft;
+      startTop = el.offsetTop;
+    }, { passive: true });
 
     document.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
@@ -270,6 +285,24 @@ const WindowManager = {
         isDragging = false;
         document.body.style.cursor = '';
       }
+    });
+
+    // Touch move/end
+    document.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const touch = e.touches[0];
+      const dx = touch.clientX - startX;
+      const dy = touch.clientY - startY;
+      let newLeft = startLeft + dx;
+      let newTop = Math.max(28, startTop + dy);
+      newLeft = Math.max(-el.offsetWidth + 100, Math.min(window.innerWidth - 100, newLeft));
+      newTop = Math.min(window.innerHeight - 38, newTop);
+      el.style.left = newLeft + 'px';
+      el.style.top = newTop + 'px';
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+      isDragging = false;
     });
   },
 

@@ -38,6 +38,21 @@ window.Toast = {
     document.documentElement.style.setProperty('--accent', user.accent);
   }
 
+  // Detect touch device
+  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+    document.body.classList.add('touch-device');
+  }
+
+  // Detect mobile
+  if (window.innerWidth <= 768) {
+    document.body.classList.add('mobile');
+  }
+
+  // Update on resize
+  window.addEventListener('resize', () => {
+    document.body.classList.toggle('mobile', window.innerWidth <= 768);
+  });
+
   // Boot progress animation
   let progress = 0;
   const bootInterval = setInterval(() => {

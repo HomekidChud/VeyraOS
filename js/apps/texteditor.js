@@ -5,7 +5,7 @@
 AppRegistry.register('texteditor', {
   name: 'Text Editor',
   iconBg: 'linear-gradient(135deg, #3b82f6, #1e40af)',
-  iconText: '📝',
+  iconText: VeyraIcons.texteditor,
 
   render(container, win) {
     container.innerHTML = `

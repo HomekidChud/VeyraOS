@@ -1,0 +1,682 @@
+/* ============================================
+   VeyraOS — Mobile Responsive Design
+   For phones and small tablets
+   ============================================ */
+
+/* ---- Touch device detection ---- */
+body.touch-device {
+  --touch-min: 44px;
+}
+
+body.touch-device .dock-item {
+  width: 44px;
+  height: 44px;
+}
+
+body.touch-device .menu-item {
+  padding: 0 10px;
+}
+
+/* ---- Mobile breakpoints ---- */
+
+/* Tablet and below */
+@media (max-width: 768px) {
+  /* Menu bar */
+  .menu-bar {
+    height: 36px;
+    padding: 0 6px;
+    font-size: 0.74rem;
+  }
+
+  .menu-bar-left {
+    gap: 0;
+  }
+
+  .menu-item {
+    padding: 0 5px;
+    font-size: 0.74rem;
+  }
+
+  .menu-item.menu-action {
+    display: none;
+  }
+
+  .menu-item.menu-app-name {
+    font-size: 0.78rem;
+    font-weight: 700;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .menu-bar-right {
+    gap: 2px;
+  }
+
+  .menu-bar-right .menu-item {
+    padding: 0 4px;
+  }
+
+  #menuDateTime {
+    font-size: 0.68rem;
+    gap: 3px;
+  }
+
+  /* Hide some status icons on mobile */
+  #menuBattery,
+  #menuSearch,
+  #menuControlCenter {
+    display: none;
+  }
+
+  /* Dock */
+  .dock {
+    bottom: 4px;
+  }
+
+  .dock-container {
+    gap: 3px;
+    padding: 4px 6px;
+    border-radius: 16px;
+  }
+
+  .dock-item {
+    width: 40px;
+    height: 40px;
+  }
+
+  .dock-item:hover {
+    transform: none;
+  }
+
+  .dock-separator-left,
+  .dock-separator-right {
+    display: none;
+  }
+
+  .dock-item-tooltip {
+    display: none;
+  }
+
+  /* Desktop icons */
+  .desktop-icons {
+    top: 44px;
+    right: 8px;
+    gap: 4px;
+  }
+
+  .desktop-icon {
+    width: 64px;
+  }
+
+  .desktop-icon-img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .desktop-icon-img img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .desktop-icon-label {
+    font-size: 0.64rem;
+    max-width: 60px;
+  }
+
+  /* Windows — full screen on mobile */
+  .window {
+    border-radius: 0;
+    width: 100% !important;
+    height: calc(100% - 36px - 64px) !important;
+    left: 0 !important;
+    top: 36px !important;
+    max-width: 100%;
+    bottom: 64px;
+  }
+
+  .window.maximized {
+    width: 100% !important;
+    height: calc(100% - 36px - 64px) !important;
+  }
+
+  .window-titlebar {
+    height: 34px;
+    padding: 0 10px;
+  }
+
+  .window-title {
+    font-size: 0.74rem;
+  }
+
+  .window-controls {
+    gap: 6px;
+  }
+
+  .window-btn {
+    width: 10px;
+    height: 10px;
+  }
+
+  /* Resize handles hidden on mobile */
+  .resize-handle {
+    display: none;
+  }
+
+  /* Window body */
+  .window-body {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Sidebar layouts collapse */
+  .window-body.sidebar-layout {
+    flex-direction: column;
+  }
+
+  .window-sidebar {
+    width: 100%;
+    max-height: 120px;
+    border-right: none;
+    border-bottom: 0.5px solid var(--line);
+  }
+
+  /* App-specific mobile adjustments */
+
+  /* Settings */
+  .settings-root {
+    flex-direction: column;
+  }
+
+  .settings-sidebar {
+    width: 100%;
+    max-height: 100px;
+    border-right: none;
+    border-bottom: 0.5px solid var(--line);
+  }
+
+  .settings-main {
+    padding: 16px;
+  }
+
+  .settings-section-title {
+    font-size: 1.1rem;
+  }
+
+  /* Browser */
+  .browser-tabbar {
+    min-height: 32px;
+    padding: 4px 4px 0;
+  }
+
+  .browser-tab {
+    max-width: 100px;
+    padding: 4px 8px;
+    font-size: 0.72rem;
+  }
+
+  .browser-tab-title {
+    max-width: 60px;
+  }
+
+  .browser-toolbar {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px;
+  }
+
+  .browser-nav-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .browser-url-bar {
+    order: -1;
+    width: 100%;
+    height: 32px;
+  }
+
+  .browser-shortcuts {
+    grid-template-columns: repeat(3, 70px);
+    gap: 12px;
+  }
+
+  .browser-shortcut-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .browser-startpage {
+    padding: 20px 12px;
+  }
+
+  .browser-startpage-logo {
+    font-size: 1.6rem;
+  }
+
+  .browser-search-box {
+    height: 42px;
+  }
+
+  /* Hide some toolbar buttons on mobile */
+  #browserBookmarksBtn,
+  #browserHistory {
+    display: none;
+  }
+
+  /* File Manager */
+  .finder-sidebar {
+    width: 100%;
+    max-height: 100px;
+  }
+
+  .finder-root {
+    flex-direction: column;
+  }
+
+  .finder-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+  }
+
+  .finder-file-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* Calculator */
+  .calc-root {
+    padding: 12px;
+    height: calc(100% - 34px);
+  }
+
+  .calc-display {
+    min-height: 50px;
+    max-height: 80px;
+  }
+
+  .calc-result {
+    font-size: 2.2rem;
+  }
+
+  .calc-key {
+    height: 44px;
+    font-size: 1rem;
+  }
+
+  /* Terminal */
+  .terminal-root {
+    font-size: 0.78rem;
+    padding: 10px;
+  }
+
+  /* Notes */
+  .notes-root {
+    flex-direction: column;
+  }
+
+  .notes-sidebar {
+    width: 100%;
+    max-height: 100px;
+  }
+
+  /* Music */
+  .music-main {
+    padding: 16px;
+  }
+
+  .music-now-playing {
+    gap: 12px;
+  }
+
+  .music-art {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* App Store */
+  .appstore-root {
+    padding: 16px;
+  }
+
+  .appstore-featured {
+    padding: 16px;
+  }
+
+  .appstore-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Photos */
+  .photos-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  }
+
+  /* Text Editor */
+  .texteditor-area {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+
+  /* Downloads */
+  .download-item {
+    padding: 8px;
+  }
+
+  /* Control Center */
+  .control-center {
+    width: calc(100vw - 16px);
+    right: 8px;
+    left: 8px;
+    padding: 8px;
+  }
+
+  .cc-section {
+    gap: 6px;
+  }
+
+  .cc-tile {
+    padding: 8px;
+  }
+
+  /* Spotlight */
+  .spotlight {
+    width: calc(100vw - 24px);
+    top: 15%;
+  }
+
+  .spotlight-input {
+    font-size: 1.1rem;
+  }
+
+  .spotlight-input-wrap {
+    padding: 12px 16px;
+  }
+
+  /* Notification center */
+  .notif-center {
+    width: calc(100vw - 16px);
+    right: 8px;
+    left: 8px;
+  }
+
+  /* Launchpad */
+  .launchpad-overlay {
+    padding: 20px 12px;
+  }
+
+  .launchpad-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .launchpad-icon img {
+    width: 56px;
+    height: 56px;
+  }
+
+  .launchpad-icon span {
+    font-size: 0.68rem;
+  }
+
+  /* Toasts */
+  .toasts {
+    bottom: 80px;
+    right: 8px;
+    left: 8px;
+  }
+
+  .toast {
+    max-width: none;
+  }
+
+  /* Login screen */
+  .login-avatar {
+    width: 72px;
+    height: 72px;
+  }
+
+  .login-avatar svg {
+    width: 48px;
+    height: 48px;
+  }
+
+  .login-name {
+    font-size: 1.1rem;
+  }
+
+  .login-password {
+    width: 200px;
+    height: 34px;
+  }
+
+  /* Dropdowns */
+  .dropdown-menu {
+    min-width: 200px;
+  }
+
+  /* Context menu */
+  .context-menu {
+    min-width: 180px;
+  }
+}
+
+/* Phone only */
+@media (max-width: 420px) {
+  /* Menu bar — even more compact */
+  .menu-bar {
+    height: 32px;
+    font-size: 0.7rem;
+  }
+
+  .menu-item.menu-logo svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .menu-item.menu-app-name {
+    max-width: 60px;
+    font-size: 0.72rem;
+  }
+
+  /* Dock — smaller, more items visible */
+  .dock-item {
+    width: 36px;
+    height: 36px;
+  }
+
+  .dock-container {
+    padding: 3px 4px;
+    border-radius: 14px;
+  }
+
+  /* Desktop icons smaller */
+  .desktop-icon {
+    width: 56px;
+  }
+
+  .desktop-icon-img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .desktop-icon-label {
+    font-size: 0.6rem;
+  }
+
+  /* Browser shortcuts — 2 columns */
+  .browser-shortcuts {
+    grid-template-columns: repeat(2, 70px);
+  }
+
+  /* Launchpad — 3 columns */
+  .launchpad-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .launchpad-icon img {
+    width: 48px;
+    height: 48px;
+  }
+
+  /* Settings — compact */
+  .settings-main {
+    padding: 12px;
+  }
+
+  /* Calculator — full width keys */
+  .calc-key {
+    height: 44px;
+    font-size: 1rem;
+  }
+
+  /* Music — stacked */
+  .music-now-playing {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* Landscape mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .menu-bar {
+    height: 28px;
+  }
+
+  .window {
+    top: 28px !important;
+    height: calc(100% - 28px - 60px) !important;
+  }
+
+  .dock {
+    bottom: 2px;
+  }
+
+  .dock-item {
+    width: 32px;
+    height: 32px;
+  }
+
+  .login-content {
+    transform: scale(0.85);
+  }
+}
+
+/* Large desktop — more dock items, bigger windows */
+@media (min-width: 1440px) {
+  .dock-item {
+    width: 56px;
+    height: 56px;
+  }
+
+  .desktop-icon-img {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+/* ---- Touch support for window dragging ---- */
+@media (pointer: coarse) {
+  .window-titlebar {
+    cursor: default;
+  }
+
+  .window-btn {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dock-item:hover {
+    transform: none;
+  }
+
+  .dock-item:active {
+    transform: scale(0.9);
+  }
+
+  /* Larger tap targets */
+  .browser-nav-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* Disable hover effects */
+  .dock-item-tooltip {
+    display: none;
+  }
+}
+
+/* ---- Smooth scrolling ---- */
+.window-body,
+.finder-content,
+.settings-main,
+.photos-root,
+.terminal-root,
+.mail-list-item,
+.browser-startpage {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* ---- Image rendering ---- */
+.app-icon-img,
+.dock-item-icon img,
+.desktop-icon-img img,
+.launchpad-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* ---- Prevent text selection on UI ---- */
+.dock-item,
+.desktop-icon,
+.menu-item,
+.window-titlebar,
+.window-btn,
+.browser-nav-btn,
+.calc-key,
+.launchpad-icon {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* ---- Smooth animations on mobile ---- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---- Safe area insets for notched phones ---- */
+@supports (padding: env(safe-area-inset-top)) {
+  .menu-bar {
+    padding-top: env(safe-area-inset-top);
+    height: calc(36px + env(safe-area-inset-top));
+  }
+
+  .window {
+    top: calc(36px + env(safe-area-inset-top)) !important;
+    height: calc(100% - 36px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+  }
+
+  .dock {
+    bottom: calc(4px + env(safe-area-inset-bottom));
+  }
+}

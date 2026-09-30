@@ -5,7 +5,7 @@
 AppRegistry.register('calculator', {
   name: 'Calculator',
   iconBg: 'linear-gradient(135deg, #374151, #1f2937)',
-  iconText: '🧮',
+  iconText: VeyraIcons.calculator,
 
   render(container, win) {
     container.innerHTML = `

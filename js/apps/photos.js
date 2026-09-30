@@ -5,7 +5,7 @@
 AppRegistry.register('photos', {
   name: 'Photos',
   iconBg: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
-  iconText: '📷',
+  iconText: VeyraIcons.photos,
 
   render(container, win) {
     container.innerHTML = `

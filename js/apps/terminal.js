@@ -5,7 +5,7 @@
 AppRegistry.register('terminal', {
   name: 'Terminal',
   iconBg: 'linear-gradient(135deg, #1a1a2e, #0f0f1e)',
-  iconText: '⬛',
+  iconText: VeyraIcons.terminal,
 
   render(container, win) {
     container.innerHTML = `

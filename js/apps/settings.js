@@ -5,7 +5,7 @@
 AppRegistry.register('settings', {
   name: 'System Settings',
   iconBg: 'linear-gradient(135deg, #6b7280, #4b5563)',
-  iconText: '⚙️',
+  iconText: VeyraIcons.settings,
 
   render(container, win) {
     const user = OSStorage.getUser();

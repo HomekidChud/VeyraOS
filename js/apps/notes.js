@@ -5,7 +5,7 @@
 AppRegistry.register('notes', {
   name: 'Notes',
   iconBg: 'linear-gradient(135deg, #fbbf24, #d97706)',
-  iconText: '🗒️',
+  iconText: VeyraIcons.notes,
 
   render(container, win) {
     let notes = OSStorage.getNotes();
