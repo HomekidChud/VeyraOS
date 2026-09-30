@@ -1,25 +1,27 @@
 // ============================================
-// VeyraOS — Dock
+// VeyraOS — Dock (v2.0 with custom SVG icons)
 // ============================================
 
 const Dock = {
   apps: [
-    { id: 'finder', name: 'Finder', icon: 'finder', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M3 8l3-3h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/><path d="M3 8v8M21 10h-6"/></svg>' },
-    { id: 'browser', name: 'Veyra Browser', icon: 'browser', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.5-3.5-9s1-6.5 3.5-9z"/></svg>' },
-    { id: 'mail', name: 'Mail', icon: 'mail', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>' },
-    { id: 'notes', name: 'Notes', icon: 'notes', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M5 4h14v11l-4 5H5z"/><path d="M15 20v-5h4"/></svg>' },
-    { id: 'calendar', name: 'Calendar', icon: 'calendar', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>' },
-    { id: 'photos', name: 'Photos', icon: 'photos', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M3 17l5-4 4 3 3-2 6 5"/></svg>' },
-    { id: 'music', name: 'Music', icon: 'music', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>' },
-    { id: 'appstore', name: 'App Store', icon: 'appstore', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M12 3l8 14H4z"/><path d="M9 14l3-5 3 5"/></svg>' },
-    { id: 'calculator', name: 'Calculator', icon: 'calculator', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M16 15h0M8 19h2M12 19h2M16 19h0"/></svg>' },
-    { id: 'texteditor', name: 'Text Editor', icon: 'text', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>' },
-    { id: 'terminal', name: 'Terminal', icon: 'terminal', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M13 15h4"/></svg>' },
-    { id: 'settings', name: 'Settings', icon: 'settings', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></svg>' }
+    { id: 'launchpad', name: 'Launchpad', icon: 'launchpad', svg: VeyraIcons.launchpad },
+    { id: 'filemanager', name: 'File Manager', icon: 'finder', svg: VeyraIcons.finder },
+    { id: 'browser', name: 'Veyra Browser', icon: 'browser', svg: VeyraIcons.browser },
+    { id: 'mail', name: 'Mail', icon: 'mail', svg: VeyraIcons.mail },
+    { id: 'notes', name: 'Notes', icon: 'notes', svg: VeyraIcons.notes },
+    { id: 'calendar', name: 'Calendar', icon: 'calendar', svg: VeyraIcons.calendar },
+    { id: 'photos', name: 'Photos', icon: 'photos', svg: VeyraIcons.photos },
+    { id: 'music', name: 'Music', icon: 'music', svg: VeyraIcons.music },
+    { id: 'downloads', name: 'Downloads', icon: 'downloads', svg: VeyraIcons.downloads },
+    { id: 'appstore', name: 'App Store', icon: 'appstore', svg: VeyraIcons.appstore },
+    { id: 'calculator', name: 'Calculator', icon: 'calculator', svg: VeyraIcons.calculator },
+    { id: 'texteditor', name: 'Text Editor', icon: 'texteditor', svg: VeyraIcons.texteditor },
+    { id: 'terminal', name: 'Terminal', icon: 'terminal', svg: VeyraIcons.terminal },
+    { id: 'settings', name: 'Settings', icon: 'settings', svg: VeyraIcons.settings }
   ],
 
   rightApps: [
-    { id: 'trash', name: 'Trash', icon: 'trash', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M5 7h14M10 7V5h4v7M7 7l1 13h8l1-13"/></svg>' }
+    { id: 'trash', name: 'Trash', icon: 'trash', svg: VeyraIcons.trash }
   ],
 
   init() {
@@ -33,7 +35,6 @@ const Dock = {
     left.innerHTML = this.apps.map(app => this._renderItem(app)).join('');
     right.innerHTML = this.rightApps.map(app => this._renderItem(app)).join('');
 
-    // Attach click handlers
     document.querySelectorAll('.dock-item').forEach(item => {
       item.addEventListener('click', () => {
         const appId = item.dataset.appId;
@@ -45,7 +46,11 @@ const Dock = {
   _renderItem(app) {
     return `
       <div class="dock-item" data-app-id="${app.id}">
-        <div class="dock-item-icon dock-icon-${app.icon}">${app.svg}</div>
+        <div class="dock-item-icon" style="background:transparent;box-shadow:none;">
+          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+            ${app.svg}
+          </div>
+        </div>
         <div class="dock-item-indicator"></div>
         <div class="dock-item-tooltip">${app.name}</div>
       </div>
@@ -58,7 +63,11 @@ const Dock = {
       return;
     }
 
-    // Check if app is already running
+    if (appId === 'launchpad') {
+      Launchpad.toggle();
+      return;
+    }
+
     const existing = WindowManager.getWindowsByApp(appId);
     if (existing.length > 0) {
       const win = existing[0];
@@ -68,13 +77,18 @@ const Dock = {
         WindowManager.focus(win.id);
       }
     } else {
-      // App-specific window sizes
       const sizeOverrides = {
         calculator: { width: 280, height: 420, resizable: false },
-        terminal: { width: 640, height: 400 },
-        notes: { width: 700, height: 500 },
+        terminal: { width: 680, height: 420 },
+        notes: { width: 720, height: 500 },
         photos: { width: 800, height: 560 },
-        music: { width: 640, height: 560 }
+        music: { width: 660, height: 580 },
+        downloads: { width: 600, height: 480 },
+        filemanager: { width: 800, height: 540 },
+        browser: { width: 1000, height: 680 },
+        appstore: { width: 800, height: 560 },
+        settings: { width: 780, height: 540 },
+        texteditor: { width: 640, height: 520 }
       };
       WindowManager.open(appId, sizeOverrides[appId] || {});
     }
@@ -92,4 +106,73 @@ const Dock = {
   }
 };
 
+// ============================================
+// Launchpad — full-screen app grid
+// ============================================
+
+const Launchpad = {
+  visible: false,
+  el: null,
+
+  toggle() {
+    this.visible = !this.visible;
+    if (this.visible) {
+      this._show();
+    } else {
+      this._hide();
+    }
+  },
+
+  _show() {
+    if (!this.el) {
+      this.el = document.createElement('div');
+      this.el.className = 'launchpad-overlay';
+      this.el.style.cssText = 'position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;animation:fadeIn 0.3s ease;';
+      document.getElementById('desktop').appendChild(this.el);
+
+      // Click outside to close
+      this.el.addEventListener('click', (e) => {
+        if (e.target === this.el) this._hide();
+      });
+    }
+
+    const allApps = Object.entries(AppRegistry.getAll()).map(([id, config]) => ({
+      id, name: config.name, svg: config.iconText
+    }));
+
+    this.el.innerHTML = `
+      <div style="width:100%;max-width:800px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:20px;">
+          ${allApps.map(app => `
+            <div class="launchpad-icon" data-app-id="${app.id}" style="display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+              <div style="width:72px;height:72px;display:flex;align-items:center;justify-content:center;">
+                ${typeof app.svg === 'string' && app.svg.startsWith('<svg') ? app.svg : `<div style="width:72px;height:72px;border-radius:16px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:2rem;">${app.svg || '📦'}</div>`}
+              </div>
+              <span style="color:#fff;font-size:0.78rem;text-shadow:0 1px 4px rgba(0,0,0,0.5);">${app.name}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+
+    this.el.querySelectorAll('.launchpad-icon').forEach(el => {
+      el.addEventListener('click', () => {
+        const appId = el.dataset.appId;
+        this._hide();
+        setTimeout(() => Dock.launchApp(appId), 200);
+      });
+    });
+
+    this.el.style.display = 'flex';
+  },
+
+  _hide() {
+    if (this.el) {
+      this.el.style.display = 'none';
+    }
+    this.visible = false;
+  }
+};
+
 window.Dock = Dock;
+window.Launchpad = Launchpad;

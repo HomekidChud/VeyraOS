@@ -105,6 +105,11 @@ window.Toast = {
       const win = WindowManager.getActiveWindow();
       if (win) WindowManager.minimize(win.id);
     }
+    // F4 or Cmd+L for Launchpad
+    if (e.key === 'F4' || ((e.metaKey || e.ctrlKey) && e.key === 'l')) {
+      e.preventDefault();
+      Launchpad.toggle();
+    }
   });
 
   // Prevent context menu globally (except on desktop)
