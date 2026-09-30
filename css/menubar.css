@@ -1,0 +1,139 @@
+/* ============================================
+   MENU BAR — macOS top bar
+   ============================================ */
+
+.menu-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  z-index: var(--z-menubar);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  background: var(--menubar-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  color: var(--menubar-text);
+  font-size: 0.82rem;
+  font-weight: 500;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.menu-bar-left, .menu-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 100%;
+}
+
+.menu-bar-right { gap: 4px; }
+
+.menu-item {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 6px;
+  cursor: default;
+  transition: background var(--t-fast);
+  white-space: nowrap;
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="light"] .menu-item:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.menu-item.menu-action {
+  font-weight: 400;
+}
+
+.menu-item.menu-app-name {
+  font-weight: 700;
+}
+
+.menu-logo {
+  padding: 0 8px;
+}
+
+.menu-logo svg {
+  width: 16px;
+  height: 16px;
+}
+
+.menu-status {
+  padding: 0 6px;
+}
+
+.menu-status svg {
+  opacity: 0.9;
+}
+
+.menu-item.menu-status:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#menuDateTime {
+  font-size: 0.78rem;
+  gap: 6px;
+}
+
+#menuTime { font-weight: 600; }
+#menuDate { opacity: 0.8; }
+
+/* ============================================
+   DROPDOWN MENUS
+   ============================================ */
+.dropdown-menu {
+  position: fixed;
+  z-index: var(--z-dropdown);
+  min-width: 240px;
+  background: var(--dropdown-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 0.5px solid var(--line-2);
+  border-radius: var(--r);
+  box-shadow: var(--dropdown-shadow);
+  padding: 5px;
+  animation: dropdownIn 0.15s var(--ease) forwards;
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.dropdown-item {
+  padding: 5px 12px;
+  border-radius: var(--r-sm);
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dropdown-item:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.dropdown-sep {
+  height: 1px;
+  background: var(--line);
+  margin: 5px 8px;
+}
+
+.dropdown-shortcut {
+  opacity: 0.5;
+  font-size: 0.78rem;
+  margin-left: 24px;
+}

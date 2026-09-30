@@ -1,0 +1,519 @@
+/* ============================================
+   VeyraOS — macOS-style Design System
+   ============================================ */
+
+:root {
+  /* Accent */
+  --accent: #0a84ff;
+  --accent-light: #409cff;
+  --accent-soft: rgba(10, 132, 255, 0.15);
+
+  /* Fonts */
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  --font-mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+
+  /* Window radius */
+  --r-sm: 6px;
+  --r: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+
+  /* Transitions */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --t-fast: 120ms var(--ease);
+  --t: 200ms var(--ease);
+  --t-slow: 350ms var(--ease);
+
+  /* Z-index scale */
+  --z-desktop: 0;
+  --z-dock: 1000;
+  --z-menubar: 1100;
+  --z-window: 500;
+  --z-window-active: 550;
+  --z-dropdown: 1200;
+  --z-spotlight: 2000;
+  --z-overlay: 3000;
+  --z-toast: 4000;
+}
+
+/* ---- Dark Theme (default) ---- */
+[data-theme="dark"] {
+  --desktop-bg: #1a1a2e;
+  --desktop-bg-2: #16213e;
+  --desktop-gradient: radial-gradient(ellipse at top, #2a1a3e 0%, #1a1a2e 40%, #0f0f1e 100%);
+
+  --window-bg: rgba(30, 30, 40, 0.85);
+  --window-bg-solid: #1e1e28;
+  --window-border: rgba(255, 255, 255, 0.08);
+  --window-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
+
+  --titlebar-bg: rgba(48, 48, 58, 0.9);
+  --titlebar-border: rgba(255, 255, 255, 0.06);
+
+  --sidebar-bg: rgba(40, 40, 52, 0.6);
+  --content-bg: rgba(28, 28, 38, 0.6);
+
+  --surface: rgba(44, 44, 56, 0.8);
+  --surface-2: rgba(52, 52, 66, 0.8);
+  --surface-3: rgba(60, 60, 76, 0.8);
+  --surface-hover: rgba(64, 64, 80, 0.9);
+
+  --text: #f0f0f5;
+  --text-2: #c0c0cc;
+  --text-3: #8888a0;
+  --muted: #6a6a80;
+
+  --line: rgba(255, 255, 255, 0.08);
+  --line-2: rgba(255, 255, 255, 0.12);
+
+  --red: #ff6b6b;
+  --green: #51d88a;
+  --yellow: #ffc857;
+  --blue: #0a84ff;
+  --purple: #bf5af2;
+  --pink: #ff375f;
+  --orange: #ff9f0a;
+
+  --dock-bg: rgba(50, 50, 60, 0.55);
+  --dock-border: rgba(255, 255, 255, 0.1);
+  --menubar-bg: rgba(20, 20, 28, 0.6);
+  --menubar-text: rgba(255, 255, 255, 0.9);
+
+  --dropdown-bg: rgba(40, 40, 50, 0.92);
+  --dropdown-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* ---- Light Theme ---- */
+[data-theme="light"] {
+  --desktop-bg: #e8e8ed;
+  --desktop-bg-2: #d8d8de;
+  --desktop-gradient: radial-gradient(ellipse at top, #c8d8f0 0%, #e8e8ed 40%, #d0d0d8 100%);
+
+  --window-bg: rgba(255, 255, 255, 0.92);
+  --window-bg-solid: #ffffff;
+  --window-border: rgba(0, 0, 0, 0.1);
+  --window-shadow: 0 24px 60px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  --titlebar-bg: rgba(240, 240, 245, 0.9);
+  --titlebar-border: rgba(0, 0, 0, 0.06);
+
+  --sidebar-bg: rgba(235, 235, 240, 0.6);
+  --content-bg: rgba(255, 255, 255, 0.5);
+
+  --surface: rgba(250, 250, 252, 0.9);
+  --surface-2: rgba(244, 244, 248, 0.9);
+  --surface-3: rgba(238, 238, 242, 0.9);
+  --surface-hover: rgba(232, 232, 238, 0.95);
+
+  --text: #1a1a2e;
+  --text-2: #4a4a5a;
+  --text-3: #7a7a8a;
+  --muted: #9a9aaa;
+
+  --line: rgba(0, 0, 0, 0.06);
+  --line-2: rgba(0, 0, 0, 0.1);
+
+  --red: #e53e3e;
+  --green: #22a559;
+  --yellow: #d69000;
+  --blue: #0a84ff;
+  --purple: #8944ab;
+  --pink: #e0356b;
+  --orange: #e8850a;
+
+  --dock-bg: rgba(255, 255, 255, 0.5);
+  --dock-border: rgba(255, 255, 255, 0.3);
+  --menubar-bg: rgba(255, 255, 255, 0.5);
+  --menubar-text: rgba(0, 0, 0, 0.85);
+
+  --dropdown-bg: rgba(255, 255, 255, 0.92);
+  --dropdown-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* ---- Reset ---- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  background: var(--desktop-gradient);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+a { color: var(--accent); text-decoration: none; }
+button { font: inherit; color: inherit; cursor: pointer; background: none; border: none; }
+input, select, textarea { font: inherit; color: inherit; }
+svg { display: block; }
+
+.hidden { display: none !important; }
+.no-select { user-select: none; -webkit-user-select: none; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.3); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(128, 128, 128, 0.5); }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ============================================
+   BOOT SCREEN
+   ============================================ */
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  transition: opacity 0.6s ease;
+}
+
+.boot-screen.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.boot-logo {
+  color: #f0f0f5;
+  opacity: 0;
+  animation: bootLogoIn 0.8s 0.3s var(--ease) forwards;
+}
+
+.boot-logo svg { filter: drop-shadow(0 4px 20px rgba(10, 132, 255, 0.3)); }
+
+@keyframes bootLogoIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.boot-progress {
+  width: 200px;
+  opacity: 0;
+  animation: bootLogoIn 0.6s 0.8s var(--ease) forwards;
+}
+
+.boot-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.boot-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* ============================================
+   LOGIN SCREEN
+   ============================================ */
+.login-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.login-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.login-blur {
+  position: absolute;
+  inset: 0;
+  background: var(--desktop-gradient);
+  filter: blur(40px) brightness(0.7);
+}
+
+.login-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.login-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.login-name {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.login-password-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.login-password {
+  width: 240px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  text-align: center;
+  backdrop-filter: blur(20px);
+  outline: none;
+  transition: border-color var(--t), background var(--t);
+}
+
+.login-password:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.login-password::placeholder { color: rgba(255, 255, 255, 0.4); }
+
+.login-arrow {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--t), transform var(--t);
+}
+
+.login-arrow:hover {
+  background: var(--accent);
+  border-color: transparent;
+}
+
+.login-arrow:active { transform: scale(0.92); }
+
+.login-hint {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 12px;
+  max-width: 280px;
+}
+
+/* ============================================
+   DESKTOP
+   ============================================ */
+.desktop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-desktop);
+  overflow: hidden;
+}
+
+/* ============================================
+   DESKTOP ICONS
+   ============================================ */
+.desktop-icons {
+  position: absolute;
+  top: calc(var(--menubar-height, 28px) + 12px);
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+
+.desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 80px;
+  padding: 8px 4px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background var(--t-fast);
+}
+
+.desktop-icon:hover { background: rgba(255, 255, 255, 0.08); }
+.desktop-icon:active { background: rgba(255, 255, 255, 0.12); }
+
+.desktop-icon-img {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.desktop-icon-label {
+  font-size: 0.72rem;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 76px;
+}
+
+/* ============================================
+   TOASTS
+   ============================================ */
+.toasts {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  background: var(--surface-2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 14px 18px;
+  box-shadow: var(--window-shadow);
+  max-width: 360px;
+  animation: toastIn 0.3s var(--ease) forwards;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.toast.out { animation: toastOut 0.3s var(--ease) forwards; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(40px); }
+}
+
+.toast-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-body { flex: 1; }
+.toast-title { font-weight: 600; font-size: 0.9rem; }
+.toast-msg { font-size: 0.82rem; color: var(--text-3); margin-top: 2px; }
+
+/* ============================================
+   CONTEXT MENU
+   ============================================ */
+.context-menu {
+  position: fixed;
+  z-index: var(--z-overlay);
+  min-width: 200px;
+  background: var(--dropdown-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 0.5px solid var(--line-2);
+  border-radius: var(--r);
+  box-shadow: var(--dropdown-shadow);
+  padding: 5px;
+  animation: ctxIn 0.15s var(--ease) forwards;
+}
+
+@keyframes ctxIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.ctx-item {
+  padding: 5px 12px;
+  border-radius: var(--r-sm);
+  font-size: 0.86rem;
+  cursor: pointer;
+  transition: background var(--t-fast);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ctx-item:hover { background: var(--accent); color: #fff; }
+.ctx-item.disabled { opacity: 0.35; pointer-events: none; }
+
+.ctx-sep {
+  height: 1px;
+  background: var(--line);
+  margin: 5px 8px;
+}
+
+/* ============================================
+   UTILITY
+   ============================================ */
+.app-icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-icon svg { width: 60%; height: 60%; }
+
+.draggable { cursor: grab; }
+.draggable:active { cursor: grabbing; }
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.glass {
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
