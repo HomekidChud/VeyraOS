@@ -10,7 +10,11 @@ npm run check
 npm run sync
 ```
 
-The static app lives in `web/`. GitHub Pages is deployed from `web/` by `.github/workflows/pages.yml`; Capacitor copies the same directory into Android.
+The static app lives in `web/`. Capacitor copies the same directory into Android.
+
+## GitHub Pages
+
+`.github/workflows/pages.yml` deploys `web/` after GitHub Pages is enabled for the repository. Select **GitHub Actions** under **Settings → Pages**, then set the repository Actions variable `VEYRA_PAGES_ENABLED` to `true` to enable the guarded deployment job.
 
 ## Android
 
