@@ -35,7 +35,9 @@ const Dock = {
     const left = document.getElementById('dockItems');
     const right = document.getElementById('dockItemsRight');
 
-    left.innerHTML = this.apps.map(app => this._renderItem(app)).join('');
+    const mobile = window.DeviceManager?.isMobile?.() || document.body.classList.contains('device-mobile');
+    const visibleApps = mobile ? this.apps.filter(app => ['launchpad', 'filemanager', 'browser', 'notes', 'downloads', 'settings'].includes(app.id)) : this.apps;
+    left.innerHTML = visibleApps.map(app => this._renderItem(app)).join('');
     right.innerHTML = this.rightApps.map(app => this._renderItem(app)).join('');
 
     document.querySelectorAll('.dock-item').forEach(item => {

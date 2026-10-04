@@ -422,6 +422,8 @@ const DeviceManager = {
   }
 };
 
+window.DeviceManager = DeviceManager;
+
 
 
 
