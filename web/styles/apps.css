@@ -986,3 +986,42 @@
 .weather-temp { font-size: 2.5rem; font-weight: 200; }
 .weather-loc { font-size: 0.86rem; color: var(--text-2); }
 .weather-desc { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+.ve-emulator { height: 100%; display: flex; flex-direction: column; background: var(--content-bg); color: var(--text); position: relative; overflow: hidden; }
+.ve-emulator-head { display: flex; justify-content: space-between; gap: 16px; padding: 22px 24px 16px; border-bottom: 1px solid var(--line); background: linear-gradient(135deg, rgba(124,58,237,.18), rgba(239,68,68,.08)); }
+.ve-eyebrow { display: block; color: var(--accent); font-size: .68rem; font-weight: 800; letter-spacing: .12em; }
+.ve-emulator-head h2 { margin: 4px 0; font-size: 1.45rem; }
+.ve-emulator-head p, .ve-section-head small, .ve-game-info small, .ve-form-note { color: var(--muted); font-size: .78rem; }
+.ve-runtime-pill { color: #86efac; font-size: .78rem; white-space: nowrap; }
+.ve-emulator-tabs { display: flex; gap: 4px; padding: 8px 16px 0; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.ve-tab { padding: 9px 13px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--muted); cursor: pointer; white-space: nowrap; }
+.ve-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+.ve-tab span { color: var(--accent); }
+.ve-emulator-main { flex: 1; min-height: 0; overflow: auto; padding: 18px; }
+.ve-panel.hidden, .ve-player.hidden, .hidden { display: none !important; }
+.ve-section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+.ve-section-head b { display: block; font-size: 1rem; }
+.ve-game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.ve-game-card, .ve-download-row { display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.ve-game-art { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 12px; font-size: 1.5rem; background: linear-gradient(135deg, #ef4444, #7c3aed); flex-shrink: 0; }
+.ve-game-info { flex: 1; min-width: 0; }
+.ve-game-info b, .ve-download-row b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ve-game-info small, .ve-download-row small { display: block; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ve-legal-note, .ve-form-note { margin-top: 18px; padding: 12px; border-radius: 10px; background: rgba(245,158,11,.08); color: var(--muted); }
+.ve-drop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; min-height: 150px; border: 1px dashed var(--accent); border-radius: 14px; background: rgba(143,176,240,.06); cursor: pointer; text-align: center; }
+.ve-drop input { display: none; }
+.ve-drop span { font-weight: 700; }
+.ve-drop small, .ve-divider { color: var(--muted); font-size: .78rem; }
+.ve-divider { display: flex; align-items: center; gap: 10px; margin: 18px 0; }
+.ve-divider::before, .ve-divider::after { content: ''; height: 1px; background: var(--line); flex: 1; }
+#veUrlForm { display: flex; gap: 8px; }
+#veUrlForm .input { flex: 1; min-width: 0; }
+.ve-empty { grid-column: 1 / -1; padding: 42px 20px; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); text-align: center; }
+.ve-download-list { display: grid; gap: 8px; }
+.ve-download-row > span { color: #86efac; font-size: 1.1rem; }
+.ve-download-row > div { min-width: 0; flex: 1; }
+.ve-download-row em { color: var(--muted); font-size: .75rem; font-style: normal; }
+.ve-player { position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; background: #05070d; }
+.ve-player-head { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: var(--titlebar-bg); border-bottom: 1px solid var(--line); }
+#veGameFrame { flex: 1; width: 100%; border: 0; background: #000; }
+@media (max-width: 768px) { .ve-emulator-head { padding: 16px; } .ve-emulator-head p { line-height: 1.35; } .ve-emulator-main { padding: 12px; } .ve-game-grid { grid-template-columns: 1fr; } #veUrlForm { flex-direction: column; } .ve-game-card .btn { min-height: 40px; } }

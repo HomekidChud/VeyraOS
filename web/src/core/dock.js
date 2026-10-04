@@ -7,6 +7,7 @@ const Dock = {
     { id: 'launchpad', name: 'Launchpad', icon: VeyraIcons.launchpad },
     { id: 'filemanager', name: 'File Manager', icon: VeyraIcons.filemanager },
     { id: 'browser', name: 'Veyra Browser', icon: VeyraIcons.browser },
+    { id: 'gameemulator', name: 'Game Emulator', icon: '🎮' },
     { id: 'mail', name: 'Mail', icon: VeyraIcons.mail },
     { id: 'notes', name: 'Notes', icon: VeyraIcons.notes },
     { id: 'calendar', name: 'Calendar', icon: VeyraIcons.calendar },
@@ -36,7 +37,7 @@ const Dock = {
     const right = document.getElementById('dockItemsRight');
 
     const mobile = window.DeviceManager?.isMobile?.() || document.body.classList.contains('device-mobile');
-    const visibleApps = mobile ? this.apps.filter(app => ['launchpad', 'filemanager', 'browser', 'notes', 'downloads', 'settings'].includes(app.id)) : this.apps;
+    const visibleApps = mobile ? this.apps.filter(app => ['launchpad', 'filemanager', 'browser', 'gameemulator', 'notes', 'downloads', 'settings'].includes(app.id)) : this.apps;
     left.innerHTML = visibleApps.map(app => this._renderItem(app)).join('');
     right.innerHTML = this.rightApps.map(app => this._renderItem(app)).join('');
 
