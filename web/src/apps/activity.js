@@ -160,8 +160,7 @@ AppRegistry.register('activity', {
           <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:12px;">Network Connections</h3>
           <div style="display:grid;grid-template-columns:1fr 80px 60px;gap:8px;font-size:0.82rem;">
             ${[
-              { name: 'Veyra Server', addr: 'veyraserver.onrender.com', port: '443' },
-              { name: 'CORS Proxy', addr: 'api.allorigins.win', port: '443' },
+              { name: 'Veyra Browser API', addr: 'veyraserver-xscy.onrender.com', port: '443' },
               { name: 'DNS Server', addr: '8.8.8.8', port: '53' },
               { name: 'Local Network', addr: '192.168.1.1', port: '—' },
               { name: 'Cloud Storage', addr: 's3.amazonaws.com', port: '443' }
