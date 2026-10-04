@@ -5,6 +5,8 @@ AppRegistry.register('browser', {
 
   render(container) {
     const API_BASE = window.VeyraRuntime?.apiBase || 'https://veyraserver-xscy.onrender.com';
+    let apiKey = window.VeyraRuntime?.apiKey || '';
+    try { apiKey ||= sessionStorage.getItem('veyra-api-key') || ''; } catch {}
     const state = {
       tabs: [],
       activeTabId: null,
@@ -31,7 +33,27 @@ AppRegistry.register('browser', {
       if (!value) return null;
       if (/^https?:\/\//i.test(value)) return value;
       if (/^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/.test(value)) return `https://${value}`;
-      return `https://www.google.com/search?q=${encodeURIComponent(value)}`;
+      return null;
+    }
+    function escapeHtml(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
+    function getApiKey() {
+      if (apiKey) return apiKey;
+      const entered = window.prompt('Enter your Veyra API key for sessionless search:');
+      if (!entered?.trim()) return '';
+      apiKey = entered.trim();
+      try { sessionStorage.setItem('veyra-api-key', apiKey); } catch {}
+      return apiKey;
+    }
+    async function searchWeb(query, tab) {
+      const key = getApiKey();
+      if (!key) { tab.error = 'API key required for sessionless search.'; tab.loading = false; renderPage(tab); return; }
+      tab.loading = true; tab.error = null; tab.searchResults = null; tab.url = `veyra:search:${query}`; tab.proxyUrl = ''; renderPage(tab); updateUrlBar(tab);
+      try {
+        const response = await fetch(`${API_BASE}/api/v1/search?q=${encodeURIComponent(query)}`, { headers: { Authorization: `Bearer ${key}`, Accept: 'application/json' } });
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(body.error || `Search failed (${response.status})`);
+        tab.searchResults = body; tab.loading = false; renderPage(tab); updateUrlBar(tab);
+      } catch (error) { tab.loading = false; tab.error = error.message || 'Search failed'; renderPage(tab); updateUrlBar(tab); }
     }
 
     async function ensureSession() {
@@ -65,6 +87,7 @@ AppRegistry.register('browser', {
     async function fetchPage(url, tab, historyMode = 'push') {
       tab.loading = true;
       tab.error = null;
+      tab.searchResults = null;
       tab.url = url;
       renderTabBar();
       updateUrlBar(tab);
@@ -98,7 +121,7 @@ AppRegistry.register('browser', {
     }
 
     function createTab(url = null) {
-      const tab = { id: `btab_${++state.tabCounter}`, url: null, title: 'New Tab', loading: false, error: null, history: [], historyIdx: -1, proxyUrl: '', sessionId: '' };
+      const tab = { id: `btab_${++state.tabCounter}`, url: null, title: 'New Tab', loading: false, error: null, searchResults: null, history: [], historyIdx: -1, proxyUrl: '', sessionId: '' };
       state.tabs.push(tab);
       state.activeTabId = tab.id;
       if (url) fetchPage(url, tab);
@@ -183,8 +206,14 @@ AppRegistry.register('browser', {
         return;
       }
       if (tab.error) {
-        pageContainer.innerHTML = `<div class="browser-error"><div><b>Cannot load page</b><p>${tab.error}</p><button class="btn primary" id="retryPage">Retry</button></div></div>`;
-        pageContainer.querySelector('#retryPage')?.addEventListener('click', () => tab.url && fetchPage(tab.url, tab, 'replace'));
+        pageContainer.innerHTML = `<div class="browser-error"><div><b>Cannot load page</b><p>${escapeHtml(tab.error)}</p><button class="btn primary" id="retryPage">Retry</button></div></div>`;
+        pageContainer.querySelector('#retryPage')?.addEventListener('click', () => tab.url?.startsWith('veyra:search:') ? searchWeb(tab.url.slice(12), tab) : tab.url && fetchPage(tab.url, tab, 'replace'));
+        return;
+      }
+      if (tab.searchResults) {
+        const results = tab.searchResults.results || [];
+        pageContainer.innerHTML = `<div class="browser-startpage"><div style="width:min(700px,94%);"><h2>Veyra Search</h2><p style="color:var(--muted)">${results.length} result${results.length === 1 ? '' : 's'} · $0.001 charged · no browser session created</p><div>${results.map(result => `<button class="browser-panel-item" data-result-url="${escapeHtml(result.url)}" style="width:100%;text-align:left;margin:8px 0;border:1px solid var(--line);background:var(--surface);"><span><b>${escapeHtml(result.title)}</b><small style="display:block;color:var(--muted)">${escapeHtml(result.displayUrl || result.url)}</small><span>${escapeHtml(result.snippet || '')}</span></span></button>`).join('') || '<p>No results found.</p>'}</div></div></div>`;
+        pageContainer.querySelectorAll('[data-result-url]').forEach(el => el.addEventListener('click', () => fetchPage(el.dataset.resultUrl, tab)));
         return;
       }
       if (!tab.proxyUrl) return renderStartPage(tab);
@@ -199,7 +228,7 @@ AppRegistry.register('browser', {
     function renderStartPage(tab) {
       pageContainer.innerHTML = `<div class="browser-startpage"><div style="font-size:2rem;font-weight:700;margin:0 0 20px;display:flex;align-items:center;gap:10px"><img src="${VeyraIcons.browser}" alt="" style="width:40px;height:40px"><span>Veyra</span></div><div class="browser-search-box"><span>⌕</span><input type="text" id="startPageSearch" placeholder="Search or type a URL"></div><div class="browser-shortcuts">${state.bookmarks.map(bookmark => `<button class="browser-shortcut" data-url="${bookmark.url}"><span class="browser-shortcut-icon" style="background:${bookmark.color}">${bookmark.icon}</span><span class="browser-shortcut-label">${bookmark.title}</span></button>`).join('')}</div></div>`;
       const search = pageContainer.querySelector('#startPageSearch');
-      search.addEventListener('keydown', event => { if (event.key === 'Enter') { const url = normalizeUrl(search.value); if (url) fetchPage(url, tab); } });
+      search.addEventListener('keydown', event => { if (event.key === 'Enter') { const raw = search.value.trim(), url = normalizeUrl(raw); if (url) fetchPage(url, tab); else if (raw) searchWeb(raw, tab); } });
       pageContainer.querySelectorAll('.browser-shortcut').forEach(element => element.addEventListener('click', () => fetchPage(element.dataset.url, tab)));
       search.focus();
     }
@@ -217,11 +246,11 @@ AppRegistry.register('browser', {
     }
 
     container.querySelector('#browserNewTab').addEventListener('click', () => createTab());
-    urlInput.addEventListener('keydown', event => { if (event.key === 'Enter') { const url = normalizeUrl(urlInput.value); const tab = activeTab(); if (url && tab) fetchPage(url, tab); } });
+    urlInput.addEventListener('keydown', event => { if (event.key === 'Enter') { const raw = urlInput.value.trim(), url = normalizeUrl(raw), tab = activeTab(); if (tab && url) fetchPage(url, tab); else if (tab && raw) searchWeb(raw, tab); } });
     backBtn.addEventListener('click', () => { const tab = activeTab(); if (tab && tab.historyIdx > 0) { tab.historyIdx -= 1; fetchPage(tab.history[tab.historyIdx], tab, 'replace'); } });
     forwardBtn.addEventListener('click', () => { const tab = activeTab(); if (tab && tab.historyIdx < tab.history.length - 1) { tab.historyIdx += 1; fetchPage(tab.history[tab.historyIdx], tab, 'replace'); } });
     reloadBtn.addEventListener('click', () => { const tab = activeTab(); if (tab?.url) fetchPage(tab.url, tab, 'replace'); });
-    homeBtn.addEventListener('click', () => { const tab = activeTab(); if (!tab) return; Object.assign(tab, { url: null, title: 'New Tab', error: null, proxyUrl: '' }); renderPage(tab); updateUrlBar(tab); renderTabBar(); });
+    homeBtn.addEventListener('click', () => { const tab = activeTab(); if (!tab) return; Object.assign(tab, { url: null, title: 'New Tab', error: null, searchResults: null, proxyUrl: '' }); renderPage(tab); updateUrlBar(tab); renderTabBar(); });
     bookmarkBtn.addEventListener('click', () => { const tab = activeTab(); if (!tab?.url) return; const index = state.bookmarks.findIndex(bookmark => bookmark.url === tab.url); if (index >= 0) state.bookmarks.splice(index, 1); else state.bookmarks.push({ title: tab.title || hostOf(tab.url), url: tab.url, icon: (hostOf(tab.url)[0] || 'V').toUpperCase(), color: faviconColor(tab.url) }); saveBookmarks(); updateUrlBar(tab); });
     container.querySelector('#browserDownloads').addEventListener('click', () => WindowManager.open('downloads'));
     container.querySelector('#browserHistory').addEventListener('click', () => openPanel('history'));

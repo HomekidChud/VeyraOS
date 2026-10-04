@@ -487,7 +487,12 @@ const VyrPackage = {
     try {
       const pkg = typeof data === 'string' ? JSON.parse(data) : data;
       if (pkg.magic !== this.MAGIC) throw new Error('Invalid .vyr file: bad magic');
-      if (!pkg.manifest) throw new Error('Invalid .vyr file: missing manifest');
+      if (!pkg.manifest || typeof pkg.manifest !== 'object') throw new Error('Invalid .vyr file: missing manifest');
+      const name = String(pkg.manifest.name || '').trim();
+      if (!name || name.length > 80) throw new Error('Invalid .vyr file: app name must be 1–80 characters');
+      for (const field of ['html', 'css', 'js']) if (pkg[field] != null && typeof pkg[field] !== 'string') throw new Error(`Invalid .vyr file: ${field} must be text`);
+      if (String(pkg.html || '').length > 250000 || String(pkg.css || '').length > 100000 || String(pkg.js || '').length > 250000) throw new Error('Invalid .vyr file: package content exceeds the safety limit');
+      if (pkg.manifest.permissions && (!Array.isArray(pkg.manifest.permissions) || pkg.manifest.permissions.length > 16)) throw new Error('Invalid .vyr file: permissions are malformed');
       return pkg;
     } catch (e) {
       throw new Error('Failed to parse .vyr file: ' + e.message);
@@ -530,31 +535,15 @@ const VyrPackage = {
         iconText: pkg.manifest.icon || '📦',
         render(container, win) {
           
-          const root = document.createElement('div');
-          root.className = 'app-root vyr-app';
-          root.style.cssText = 'width:100%;height:100%;overflow:auto;';
-
-          
-          if (pkg.css) {
-            const style = document.createElement('style');
-            style.textContent = pkg.css;
-            root.appendChild(style);
-          }
-
-          
-          const body = document.createElement('div');
-          body.className = 'vyr-app-body';
-          body.innerHTML = pkg.html;
-          root.appendChild(body);
-
-          
-          if (pkg.js) {
-            const script = document.createElement('script');
-            script.textContent = pkg.js;
-            root.appendChild(script);
-          }
-
-          container.appendChild(root);
+          const frame = document.createElement('iframe');
+          frame.className = 'app-root vyr-app';
+          frame.title = `${pkg.manifest.name} (sandboxed app)`;
+          frame.setAttribute('sandbox', 'allow-scripts allow-forms allow-popups');
+          frame.referrerPolicy = 'no-referrer';
+          frame.style.cssText = 'width:100%;height:100%;border:0;background:var(--bg);';
+          const policy = "default-src 'none'; img-src data: https:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; font-src https: data:; media-src https: data:; connect-src 'none'; base-uri 'none'; form-action https:;";
+          frame.srcdoc = `<!doctype html><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${policy}"><style>html,body{margin:0;min-height:100%;font:14px system-ui,sans-serif}${pkg.css || ''}</style><body>${pkg.html || ''}<script>${pkg.js || ''}</script>`;
+          container.appendChild(frame);
         }
       });
 

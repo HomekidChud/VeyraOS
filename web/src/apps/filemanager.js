@@ -24,8 +24,10 @@ AppRegistry.register('filemanager', {
     if (!files.pictures) files.pictures = [];
     if (!files.music) files.music = [];
     if (!files.applications) files.applications = [];
-
-    const save = () => OSStorage.saveFiles(files);
+    const normaliseTree = list => { for (const entry of (Array.isArray(list) ? list : [])) { if (entry?.type === 'folder') { if (!Array.isArray(entry.children)) entry.children = []; normaliseTree(entry.children); } } };
+    Object.keys(files).forEach(key => normaliseTree(files[key]));
+    const esc = value => VeyraSafe.text(value);
+    const save = () => { const ok = OSStorage.saveFiles(files); if (!ok) Toast.show('Storage', 'Changes are only available until this tab closes. Enable site storage to save them.', '⚠️'); return ok; };
 
     container.innerHTML = `
       <div class="app-root" style="height:100%;display:flex;flex-direction:column;">
@@ -105,12 +107,14 @@ AppRegistry.register('filemanager', {
     }
 
     function getCurrentFolder() {
-      let folder = files;
-      for (const path of currentPath) {
-        if (folder[path]) folder = folder[path];
-        else return [];
+      let folder = files[currentPath[0]];
+      if (!Array.isArray(folder)) return [];
+      for (const name of currentPath.slice(1)) {
+        const child = folder.find(item => item?.type === 'folder' && item.name === name);
+        if (!child || !Array.isArray(child.children)) return [];
+        folder = child.children;
       }
-      return Array.isArray(folder) ? folder : [];
+      return folder;
     }
 
     function navigateTo(path) {
@@ -126,7 +130,7 @@ AppRegistry.register('filemanager', {
       const parts = ['Home', ...currentPath];
       breadcrumb.innerHTML = parts.map((p, i) => {
         const isLast = i === parts.length - 1;
-        return `<span style="cursor:pointer;${isLast ? 'color:var(--text);' : ''}" data-path="${i}">${p.charAt(0).toUpperCase() + p.slice(1)}</span>${!isLast ? '<span style="color:var(--muted);margin:0 2px;">›</span>' : ''}`;
+        return `<span style="cursor:pointer;${isLast ? 'color:var(--text);' : ''}" data-path="${i}">${esc(p.charAt(0).toUpperCase() + p.slice(1))}</span>${!isLast ? '<span style="color:var(--muted);margin:0 2px;">›</span>' : ''}`;
       }).join('');
 
       breadcrumb.querySelectorAll('[data-path]').forEach(el => {
@@ -172,8 +176,8 @@ AppRegistry.register('filemanager', {
         content.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;">' +
           items.map((item, i) => `
             <div class="fm-file ${selectedFile === i ? 'selected' : ''}" data-idx="${i}" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px;border-radius:10px;cursor:pointer;transition:background var(--t-fast);${selectedFile === i ? 'background:var(--accent-soft);' : ''}">
-              <div style="width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:2rem;">${getFileIcon(item)}</div>
-              <div style="font-size:0.74rem;text-align:center;word-break:break-word;max-width:90px;line-height:1.2;">${item.name}</div>
+              <div style="width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:2rem;">${esc(getFileIcon(item))}</div>
+              <div style="font-size:0.74rem;text-align:center;word-break:break-word;max-width:90px;line-height:1.2;">${esc(item.name)}</div>
             </div>
           `).join('') + '</div>';
       } else {
@@ -184,8 +188,8 @@ AppRegistry.register('filemanager', {
             </div>
             ${items.map((item, i) => `
               <div class="fm-file ${selectedFile === i ? 'selected' : ''}" data-idx="${i}" style="display:grid;grid-template-columns:1fr 100px 80px 120px;gap:8px;padding:6px 12px;border-radius:6px;cursor:pointer;transition:background var(--t-fast);font-size:0.84rem;align-items:center;${selectedFile === i ? 'background:var(--accent-soft);' : ''}">
-                <span style="display:flex;align-items:center;gap:6px;">${getFileIcon(item)} ${item.name}</span>
-                <span style="color:var(--muted);">${item.type || 'File'}</span>
+                <span style="display:flex;align-items:center;gap:6px;">${esc(getFileIcon(item))} ${esc(item.name)}</span>
+                <span style="color:var(--muted);">${esc(item.type || 'File')}</span>
                 <span style="color:var(--muted);">${item.size ? formatSize(item.size) : '—'}</span>
                 <span style="color:var(--muted);">${item.modified ? timeAgo(item.modified) : '—'}</span>
               </div>
@@ -244,14 +248,11 @@ AppRegistry.register('filemanager', {
       if (item.type === 'folder') {
         navigateTo([...currentPath, item.name]);
       } else if (item.type === 'text') {
-        WindowManager.open('texteditor', { title: item.name, width: 600, height: 500 });
-        setTimeout(() => {
-          const w = WindowManager.getActiveWindow();
-          if (w) {
-            const ta = w.el.querySelector('textarea');
-            if (ta) ta.value = item.content || '';
-          }
-        }, 100);
+        WindowManager.open('texteditor', {
+          title: item.name, width: 600, height: 500,
+          document: { name: item.name, content: item.content || '' },
+          onSave: content => { item.content = content; item.modified = Date.now(); save(); renderContent(); }
+        });
       } else if (item.type === 'app') {
         Toast.show('File Manager', 'Opening ' + item.name + '...', '🚀');
       } else if (item.type === 'image') {
@@ -316,7 +317,7 @@ AppRegistry.register('filemanager', {
       }
 
       const newItem = type === 'folder'
-        ? { name: finalName, type: 'folder', icon: '📁', modified: Date.now() }
+        ? { name: finalName, type: 'folder', icon: '📁', children: [], modified: Date.now() }
         : { name: finalName, type: 'text', icon: '📄', content: '', modified: Date.now() };
 
       items.push(newItem);
