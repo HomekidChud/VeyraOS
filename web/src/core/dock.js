@@ -2,6 +2,20 @@
 
 
 
+function escapeIconMarkup(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+}
+
+function renderAppIcon(icon, label, variant) {
+  const value = String(icon ?? '');
+  const safeLabel = escapeIconMarkup(label);
+  if (/^\/?assets\/[a-z0-9/_-]+\.(?:svg|png|webp|gif)$/i.test(value)) {
+    return `<img src="${escapeIconMarkup(value)}" alt="${safeLabel}" loading="lazy">`;
+  }
+  const iconClass = variant === 'launchpad' ? 'launchpad-emoji-icon' : 'dock-emoji-icon';
+  return `<span class="${iconClass}" role="img" aria-label="${safeLabel}">${escapeIconMarkup(value || '•')}</span>`;
+}
+
 const Dock = {
   apps: [
     { id: 'launchpad', name: 'Launchpad', icon: VeyraIcons.launchpad },
@@ -51,12 +65,12 @@ const Dock = {
 
   _renderItem(app) {
     return `
-      <div class="dock-item" data-app-id="${app.id}">
+      <div class="dock-item" data-app-id="${escapeIconMarkup(app.id)}">
         <div class="dock-item-icon">
-          <img src="${app.icon}" alt="${app.name}" loading="lazy">
+          ${renderAppIcon(app.icon, app.name, 'dock')}
         </div>
         <div class="dock-item-indicator"></div>
-        <div class="dock-item-tooltip">${app.name}</div>
+        <div class="dock-item-tooltip">${escapeIconMarkup(app.name)}</div>
       </div>
     `;
   },
@@ -144,9 +158,9 @@ const Launchpad = {
     this.el.innerHTML = `
       <div class="launchpad-grid">
         ${allApps.map(app => `
-          <div class="launchpad-icon" data-app-id="${app.id}">
-            <img src="${app.icon}" alt="${app.name}" loading="lazy">
-            <span>${app.name}</span>
+          <div class="launchpad-icon" data-app-id="${escapeIconMarkup(app.id)}">
+            ${renderAppIcon(app.icon, app.name, 'launchpad')}
+            <span class="launchpad-app-label">${escapeIconMarkup(app.name)}</span>
           </div>
         `).join('')}
       </div>
