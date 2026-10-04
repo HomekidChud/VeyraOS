@@ -2,6 +2,9 @@
 
 
 
+const VeyraSafe = {
+  text(value) { return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char])); }
+};
 const OSStorage = {
   _prefix: 'veyraos_',
   _memory: new Map(),
@@ -20,9 +23,15 @@ const OSStorage = {
   set(key, value) {
     const serialized = JSON.stringify(value);
     try {
-      if (this._storage) this._storage.setItem(this._prefix + key, serialized);
-      else this._memory.set(this._prefix + key, serialized);
-    } catch { this._memory.set(this._prefix + key, serialized); }
+      if (!this._storage) throw new Error('Persistent storage is unavailable');
+      this._storage.setItem(this._prefix + key, serialized);
+      return true;
+    } catch (error) {
+      this._memory.set(this._prefix + key, serialized);
+      this.lastError = error?.message || 'Persistent storage is unavailable';
+      window.dispatchEvent(new CustomEvent('veyra:storage-error', { detail: { key, error: this.lastError } }));
+      return false;
+    }
   },
 
   remove(key) {
@@ -72,7 +81,7 @@ const OSStorage = {
   },
 
   saveFiles(files) {
-    this.set('files', files);
+    return this.set('files', files);
   },
 
   _defaultFiles() {
@@ -118,9 +127,9 @@ const OSStorage = {
   },
 
   saveNotes(notes) {
-    this.set('notes', notes);
+    return this.set('notes', notes);
   }
 };
 
-
+window.VeyraSafe = VeyraSafe;
 window.OSStorage = OSStorage;

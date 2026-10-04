@@ -12,6 +12,13 @@ const WindowManager = {
     
     const existing = this.windows.find(w => w.appId === appId && !w.minimized);
     if (existing) {
+      if (options.document) {
+        existing.state = Object.assign(existing.state, options);
+        existing.title = options.title || existing.title;
+        const titleEl = existing.el.querySelector('.window-title');
+        if (titleEl) titleEl.textContent = existing.title;
+        existing.el.dispatchEvent(new CustomEvent('veyra:open-document', { detail: options.document }));
+      }
       this.focus(existing.id);
       return existing;
     }
@@ -59,7 +66,7 @@ const WindowManager = {
           <button class="window-btn minimize" data-action="minimize" title="Minimize"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5H8"/></svg></button>
           <button class="window-btn maximize" data-action="maximize" title="Maximize"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2H8V8H2z" fill="none"/></svg></button>
         </div>
-        <div class="window-title">${state.title}</div>
+        <div class="window-title"></div>
       </div>
       <div class="window-body" id="${id}_body"></div>
       ${state.resizable ? `
@@ -74,6 +81,7 @@ const WindowManager = {
       ` : ''}
     `;
 
+    winEl.querySelector('.window-title').textContent = String(state.title || app.name);
     document.getElementById('windows').appendChild(winEl);
 
     const winData = {
@@ -137,6 +145,7 @@ const WindowManager = {
     if (idx === -1) return;
     const win = this.windows[idx];
     win.el.classList.add('closing');
+    try { win._cleanup?.(); } catch (error) { console.warn('Window cleanup failed:', error); }
     setTimeout(() => {
       win.el.remove();
       this.windows.splice(idx, 1);

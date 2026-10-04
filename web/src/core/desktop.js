@@ -21,14 +21,11 @@ const Desktop = {
         icon: VeyraIcons.textFile,
         action: () => {
           if (f.type === 'text') {
-            WindowManager.open('texteditor', { title: f.name, width: 600, height: 500 });
-            setTimeout(() => {
-              const win = WindowManager.getActiveWindow();
-              if (win) {
-                const ta = win.el.querySelector('textarea');
-                if (ta) ta.value = f.content || '';
-              }
-            }, 100);
+            WindowManager.open('texteditor', {
+              title: f.name, width: 600, height: 500,
+              document: { name: f.name, content: f.content || '' },
+              onSave: content => { f.content = content; f.modified = Date.now(); if (!OSStorage.saveFiles(files)) Toast.show('Storage', 'Saved for this session only; browser storage is unavailable.', '⚠️'); }
+            });
           }
         }
       }))
@@ -36,8 +33,8 @@ const Desktop = {
 
     container.innerHTML = icons.map((icon, i) => `
       <div class="desktop-icon" data-idx="${i}">
-        <div class="desktop-icon-img"><img src="${icon.icon}" alt="${icon.name}" loading="lazy"></div>
-        <div class="desktop-icon-label">${icon.name}</div>
+        <div class="desktop-icon-img"><img src="${icon.icon}" alt="${VeyraSafe.text(icon.name)}" loading="lazy"></div>
+        <div class="desktop-icon-label">${VeyraSafe.text(icon.name)}</div>
       </div>
     `).join('');
 

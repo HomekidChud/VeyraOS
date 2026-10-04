@@ -45,6 +45,9 @@ AppRegistry.register('texteditor', {
     const fontSel = container.querySelector('#textFont');
     const sizeSel = container.querySelector('#textSize');
 
+    let currentDocument = win.state.document || null;
+    const setTitle = title => { win.title = title; const el = win.el.querySelector('.window-title'); if (el) el.textContent = title; };
+    const loadDocument = doc => { currentDocument = doc || null; area.value = String(doc?.content || ''); if (doc?.name) setTitle(doc.name); updateCounts(); area.focus(); };
     const updateCounts = () => {
       const text = area.value;
       charCount.textContent = text.length + ' characters';
@@ -64,6 +67,12 @@ AppRegistry.register('texteditor', {
 
     
     container.querySelector('#textSave').addEventListener('click', () => {
+      if (currentDocument && typeof win.state.onSave === 'function') {
+        currentDocument.content = area.value;
+        win.state.onSave(area.value);
+        Toast.show('Text Editor', 'Saved to Veyra Files', '💾');
+        return;
+      }
       const blob = new Blob([area.value], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -71,13 +80,15 @@ AppRegistry.register('texteditor', {
       a.download = (win.title || 'untitled') + '.txt';
       a.click();
       URL.revokeObjectURL(url);
-      Toast.show('Text Editor', 'File saved', '💾');
+      Toast.show('Text Editor', 'Downloaded file', '💾');
     });
 
     
     container.querySelector('#textNew').addEventListener('click', () => {
       if (area.value && !confirm('Start a new document? Unsaved changes will be lost.')) return;
+      currentDocument = null;
       area.value = '';
+      setTitle('Text Editor');
       updateCounts();
     });
 
@@ -100,7 +111,9 @@ AppRegistry.register('texteditor', {
       input.click();
     });
 
-    updateCounts();
+    win.el.addEventListener('veyra:open-document', event => { win.state.document = event.detail; loadDocument(event.detail); });
+    win._cleanup = () => {};
+    loadDocument(currentDocument);
     setTimeout(() => area.focus(), 100);
   }
 });

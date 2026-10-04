@@ -7,6 +7,7 @@ const SoftwareUpdate = {
   updateProgress: 0,
   updating: false,
   updateManifest: null,
+  lastCheckedAt: null,
   pollTimer: null,
   changelog: [
     { version: '2.3.0', date: 'October 4, 2026', changes: ['Automatic deployment update detection', 'Mobile-first Game Emulator with local game loading', 'Improved touch navigation and dock layout', 'Veyra API integration improvements'] },
@@ -31,8 +32,9 @@ const SoftwareUpdate = {
       this.updateManifest = fallback;
       this.lastError = error.message;
     }
+    this.lastCheckedAt = Date.now();
     this.updateAvailable = this.latestBuild !== this.currentBuild || this.latestVersion !== this.currentVersion;
-    return { current: this.currentVersion, latest: this.latestVersion, currentBuild: this.currentBuild, latestBuild: this.latestBuild, available: this.updateAvailable, manifest: this.updateManifest };
+    return { current: this.currentVersion, latest: this.latestVersion, currentBuild: this.currentBuild, latestBuild: this.latestBuild, available: this.updateAvailable, manifest: this.updateManifest, checkedAt: this.lastCheckedAt };
   },
   startAutoUpdater(intervalMs = 300000) {
     if (this.pollTimer) return;
@@ -58,10 +60,9 @@ const SoftwareUpdate = {
       }
       this.updateProgress = 70;
       if (onProgress) onProgress(this.updateProgress);
+      // A static web OS is updated by a new deployment. Do not persist an unverified
+      // version label before a reload has actually fetched that build.
       OSStorage.set('pendingOSBuild', result.latestBuild);
-      OSStorage.set('osVersion', result.latest);
-      this.currentVersion = result.latest;
-      this.currentBuild = result.latestBuild;
       this.updateProgress = 100;
       this.updating = false;
       if (onProgress) onProgress(100);
@@ -74,7 +75,7 @@ const SoftwareUpdate = {
     });
   },
   getChangelog() { return this.changelog; },
-  getCurrentVersion() { return OSStorage.get('osVersion', this.currentVersion); },
+  getCurrentVersion() { return this.currentVersion; },
   getCurrentBuild() { return this.currentBuild; }
 };
 window.SoftwareUpdate = SoftwareUpdate;
