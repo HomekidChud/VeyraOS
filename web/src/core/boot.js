@@ -76,6 +76,7 @@ window.Toast = {
     Spotlight.init();
     ControlCenter.init();
     Desktop.init();
+    SoftwareUpdate.startAutoUpdater();
 
     
     setTimeout(() => {

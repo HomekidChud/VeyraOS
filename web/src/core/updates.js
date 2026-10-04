@@ -1,98 +1,80 @@
-
-
-
-
 const SoftwareUpdate = {
-  currentVersion: '2.1.0',
-  latestVersion: '2.2.0',
+  currentVersion: '2.3.0',
+  latestVersion: '2.3.0',
+  currentBuild: window.VeyraBuild?.id || 'development',
+  latestBuild: window.VeyraBuild?.id || 'development',
   updateAvailable: false,
   updateProgress: 0,
   updating: false,
+  updateManifest: null,
+  pollTimer: null,
   changelog: [
-    { version: '2.2.0', date: 'October 1, 2026', changes: [
-      'New Paint Studio app with canvas drawing, brushes, shapes, and fill tool',
-      'Software Update system in Settings',
-      'Activity Monitor for tracking system performance',
-      'Weather app with live data for your location',
-      'Window snapping — drag windows to screen edges',
-      'Improved mobile responsive design',
-      'Performance improvements and bug fixes',
-      'New keyboard shortcuts overlay'
-    ]},
-    { version: '2.1.0', date: 'September 30, 2026', changes: [
-      'Proper SVG icon files for all apps',
-      'Mobile responsive design with touch support',
-      'New Mail app with inbox and detail view',
-      'Launchpad full-screen app grid',
-      'File Manager with create/delete/rename',
-      'Downloads Manager',
-      'Custom SVG icons throughout the OS'
-    ]},
-    { version: '2.0.0', date: 'September 30, 2026', changes: [
-      'Complete browser rewrite with tabbed browsing and proxy engine',
-      'Bookmarks, history, and download system',
-      'Launchpad and custom dock icons',
-      'Enhanced file manager with context menus',
-      'Full mobile responsive design'
-    ]},
-    { version: '1.0.0', date: 'September 30, 2026', changes: [
-      'Initial VeyraOS release',
-      'macOS-style desktop with menu bar and dock',
-      'Window manager with draggable, resizable windows',
-      '12 built-in apps',
-      'Spotlight search, Control Center',
-      'Dark and Light themes'
-    ]}
+    { version: '2.3.0', date: 'October 4, 2026', changes: ['Automatic deployment update detection', 'Mobile-first Game Emulator with local game loading', 'Improved touch navigation and dock layout', 'Veyra API integration improvements'] },
+    { version: '2.2.0', date: 'October 1, 2026', changes: ['New Paint Studio app', 'Activity Monitor and Weather app', 'Window snapping and mobile responsive improvements'] },
+    { version: '2.1.0', date: 'September 30, 2026', changes: ['Mobile responsive design with touch support', 'Mail, Launchpad, File Manager, and Downloads apps', 'Custom SVG icons throughout the OS'] },
+    { version: '2.0.0', date: 'September 30, 2026', changes: ['Tabbed browser with proxy engine', 'Bookmarks, history, downloads, Launchpad, and dock icons'] },
+    { version: '1.0.0', date: 'September 30, 2026', changes: ['Initial VeyraOS release', 'Desktop, menu bar, dock, window manager, and built-in apps'] }
   ],
-
-  checkForUpdates() {
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        this.updateAvailable = this.latestVersion !== this.currentVersion;
-        resolve({
-          current: this.currentVersion,
-          latest: this.latestVersion,
-          available: this.updateAvailable
-        });
-      }, 1500);
-    });
+  async checkForUpdates() {
+    const fallback = { version: this.latestVersion, buildId: this.latestBuild, publishedAt: '', changes: this.changelog[0]?.changes || [] };
+    try {
+      const response = await fetch(`./update-manifest.json?check=${Date.now()}`, { cache: 'no-store', headers: { Accept: 'application/json' } });
+      if (!response.ok) throw new Error(`Update manifest returned ${response.status}`);
+      const manifest = await response.json();
+      this.updateManifest = { ...fallback, ...manifest };
+      this.latestVersion = this.updateManifest.version || this.latestVersion;
+      this.latestBuild = this.updateManifest.buildId || this.latestBuild;
+      if (Array.isArray(this.updateManifest.changes) && this.updateManifest.changes.length) {
+        this.changelog = [{ version: this.latestVersion, date: this.updateManifest.publishedAt ? new Date(this.updateManifest.publishedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Latest release', changes: this.updateManifest.changes }, ...this.changelog.filter(entry => entry.version !== this.latestVersion)];
+      }
+    } catch (error) {
+      this.updateManifest = fallback;
+      this.lastError = error.message;
+    }
+    this.updateAvailable = this.latestBuild !== this.currentBuild || this.latestVersion !== this.currentVersion;
+    return { current: this.currentVersion, latest: this.latestVersion, currentBuild: this.currentBuild, latestBuild: this.latestBuild, available: this.updateAvailable, manifest: this.updateManifest };
   },
-
+  startAutoUpdater(intervalMs = 300000) {
+    if (this.pollTimer) return;
+    this.checkForUpdates().then(result => {
+      if (result.available && window.Toast) Toast.show('Software Update', `VeyraOS ${result.latest} is ready. Open Software Update to apply it.`, '⬆️');
+    });
+    this.pollTimer = window.setInterval(() => {
+      if (document.visibilityState === 'visible') this.checkForUpdates().then(result => {
+        if (result.available && window.Toast) Toast.show('Software Update', `VeyraOS ${result.latest} is ready. Reload to apply the latest build.`, '⬆️');
+      });
+    }, intervalMs);
+  },
   installUpdate(onProgress) {
     this.updating = true;
-    this.updateProgress = 0;
-
-    return new Promise((resolve) => {
-      const interval = setInterval(() => {
-        this.updateProgress += Math.random() * 15 + 5;
-        if (this.updateProgress >= 100) {
-          this.updateProgress = 100;
-          clearInterval(interval);
-          this.updating = false;
-          this.currentVersion = this.latestVersion;
-          OSStorage.set('osVersion', this.currentVersion);
-
-          
-          if (window._veyraDeploy) {
-            window._veyraDeploy();
-          }
-
-          resolve(true);
-        } else {
-          if (onProgress) onProgress(Math.round(this.updateProgress));
-        }
-      }, 400);
+    this.updateProgress = 10;
+    if (onProgress) onProgress(this.updateProgress);
+    return this.checkForUpdates().then(result => {
+      if (!result.available) {
+        this.updating = false;
+        this.updateProgress = 100;
+        if (onProgress) onProgress(100);
+        return false;
+      }
+      this.updateProgress = 70;
+      if (onProgress) onProgress(this.updateProgress);
+      OSStorage.set('pendingOSBuild', result.latestBuild);
+      OSStorage.set('osVersion', result.latest);
+      this.currentVersion = result.latest;
+      this.currentBuild = result.latestBuild;
+      this.updateProgress = 100;
+      this.updating = false;
+      if (onProgress) onProgress(100);
+      setTimeout(() => location.reload(), 500);
+      return true;
+    }).catch(error => {
+      this.updating = false;
+      this.lastError = error.message;
+      throw error;
     });
   },
-
-  getChangelog() {
-    return this.changelog;
-  },
-
-  getCurrentVersion() {
-    return OSStorage.get('osVersion', this.currentVersion);
-  }
+  getChangelog() { return this.changelog; },
+  getCurrentVersion() { return OSStorage.get('osVersion', this.currentVersion); },
+  getCurrentBuild() { return this.currentBuild; }
 };
-
 window.SoftwareUpdate = SoftwareUpdate;

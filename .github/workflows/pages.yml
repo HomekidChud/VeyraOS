@@ -27,6 +27,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      - name: Generate update metadata
+        env:
+          BUILD_ID: ${{ github.sha }}
+          PUBLISHED_AT: ${{ github.event.head_commit.timestamp || github.event.repository.updated_at }}
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const buildId = process.env.BUILD_ID;
+          const publishedAt = process.env.PUBLISHED_AT || new Date().toISOString();
+          const manifest = { version: '2.3.0', buildId, publishedAt, changes: ['Automatic deployment update detection', 'Latest VeyraOS improvements and bug fixes'] };
+          fs.writeFileSync('web/update-manifest.json', JSON.stringify(manifest, null, 2) + '\n');
+          fs.writeFileSync('web/build-meta.js', `window.VeyraBuild = ${JSON.stringify({ id: buildId, version: manifest.version })};\n`);
+          NODE
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web

@@ -1,0 +1,11 @@
+{
+  "version": "2.3.0",
+  "buildId": "development",
+  "publishedAt": "2026-10-04T00:00:00.000Z",
+  "changes": [
+    "Automatic deployment update detection",
+    "Mobile-first Game Emulator with local game loading",
+    "Improved touch navigation and dock layout",
+    "Veyra API integration improvements"
+  ]
+}
