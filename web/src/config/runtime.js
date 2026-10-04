@@ -7,5 +7,6 @@
     if (!/^https?:$/.test(url.protocol) || url.username || url.password || url.search || url.hash) throw new Error("invalid API origin");
     apiBase = url.href.replace(/\/$/, "");
   } catch {}
-  window.VeyraRuntime = Object.freeze({ apiBase });
+  const apiKey = document.querySelector('meta[name="veyra-api-key"]')?.content?.trim() || "";
+  window.VeyraRuntime = Object.freeze({ apiBase, apiKey });
 })();
